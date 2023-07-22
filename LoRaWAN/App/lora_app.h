@@ -45,7 +45,7 @@ extern "C" {
 /*!
  * CAYENNE_LPP is myDevices Application server.
  */
-/*#define CAYENNE_LPP*/
+#define CAYENNE_LPP
 /* USER CODE END EC_CAYENNE_LPP */
 
 /*!
