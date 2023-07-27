@@ -128,7 +128,7 @@ extern "C" {
  * @brief Enables/Disables the context storage management storage
  * @note  Must be enabled for LoRaWAN 1.0.4 or later.
  */
-#define CONTEXT_MANAGEMENT_ENABLED                      0
+#define CONTEXT_MANAGEMENT_ENABLED                      1
 
 /* Class B ------------------------------------*/
 /*!
