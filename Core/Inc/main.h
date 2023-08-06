@@ -66,6 +66,10 @@ void Error_Handler(void);
 #define FREQ_HIGH_GPIO_Port GPIOB
 #define LED_GREEN_Pin GPIO_PIN_10
 #define LED_GREEN_GPIO_Port GPIOA
+#define I2C2_SDA_Pin GPIO_PIN_11
+#define I2C2_SDA_GPIO_Port GPIOA
+#define I2C2_SDL_Pin GPIO_PIN_12
+#define I2C2_SDL_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 #define LED_ON  0

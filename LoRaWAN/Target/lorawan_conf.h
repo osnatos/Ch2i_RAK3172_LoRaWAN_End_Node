@@ -128,13 +128,13 @@ extern "C" {
  * @brief Enables/Disables the context storage management storage
  * @note  Must be enabled for LoRaWAN 1.0.4 or later.
  */
-#define CONTEXT_MANAGEMENT_ENABLED                      1
+#define CONTEXT_MANAGEMENT_ENABLED                      0
 
 /* Class B ------------------------------------*/
 /*!
  * @brief Enables/Disables the LoRaWAN Class B (Periodic ping downlink slots + Beacon for synchronization)
  */
-#define LORAMAC_CLASSB_ENABLED                          0
+#define LORAMAC_CLASSB_ENABLED                          1
 
 #if ( LORAMAC_CLASSB_ENABLED == 1 )
 /* CLASS B LSE crystal calibration*/
