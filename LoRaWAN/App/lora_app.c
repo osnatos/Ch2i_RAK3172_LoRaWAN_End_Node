@@ -36,7 +36,7 @@
 #include "flash_if.h"
 
 /* USER CODE BEGIN Includes */
-
+ #include "hdc2080.h"
 /* USER CODE END Includes */
 
 /* External variables ---------------------------------------------------------*/
@@ -566,8 +566,13 @@ static void SendTxData(void)
   uint16_t altitudeGps = 0;
 #endif /* CAYENNE_LPP */
 
-  EnvSensors_Read(&sensor_data);
+//  EnvSensors_Read(&sensor_data);
 
+//  if(hdc2080_StartMeassuring() == HAL_OK) {
+	  hdc2080_StartMeassuring();
+  sensor_data.temperature = hdc2080_GetTemperature();
+  sensor_data.humidity = hdc2080_GetHumidity();
+//  }
   APP_LOG(TS_ON, VLEVEL_M, "VDDA: %d\r\n", batteryLevel);
   APP_LOG(TS_ON, VLEVEL_M, "temp: %d\r\n", (int16_t)(sensor_data.temperature));
 
@@ -576,6 +581,10 @@ static void SendTxData(void)
 #ifdef CAYENNE_LPP
   CayenneLppReset();
   CayenneLppAddDigitalInput(channel++, MyCnt++);
+  CayenneLppAddTemperature(channel++, sensor_data.temperature);
+  CayenneLppAddRelativeHumidity(channel++, (uint16_t)(sensor_data.humidity));
+
+
 /*
   CayenneLppAddBarometricPressure(channel++, sensor_data.pressure);
   CayenneLppAddTemperature(channel++, sensor_data.temperature);

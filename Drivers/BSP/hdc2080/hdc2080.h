@@ -16,5 +16,7 @@ HAL_StatusTypeDef hdc2080_Read_TempAndHum(uint8_t *data);
 HAL_StatusTypeDef hdc2080_Read_ManufacturerID(uint8_t *data);
 HAL_StatusTypeDef hdc2080_Read_DevID(uint8_t *data);
 HAL_StatusTypeDef hdc2080_IsDeviceReady(void);
+float hdc2080_GetTemperature(void);
+float hdc2080_GetHumidity(void);
 
 #endif /* BSP_HDC2080_HDC2080_H_ */

@@ -47,12 +47,14 @@
 
 /* USER CODE BEGIN PV */
 HAL_StatusTypeDef status;
+uint8_t data[10] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+float GetTemperature(uint8_t *data);
+float GetHum(uint8_t *data);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -92,6 +94,12 @@ int main(void)
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
   status = hdc2080_IsDeviceReady();
+  status = hdc2080_StartMeassuring();
+  status = hdc2080_Read_TempAndHum(data);
+//  uint16_t temper = GetTemperature(data);
+  float f_temper = GetTemperature(data);
+  float f_hum = GetHum(&data[2]);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -155,6 +163,30 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+//-----------------------------------------------------------------------------
+float GetTemperature(uint8_t *data) {
+	uint16_t res;
+	float f_temp;
+	res = data[0] | (data[1] << 8);
+	f_temp = (float)res;
+//	f_temp = f_temp/1000;
+	f_temp = (f_temp/65536)*165 - 40.5;
+
+	return f_temp;
+}
+//-----------------------------------------------------------------------------
+float GetHum(uint8_t *data) {
+	uint16_t res;
+	float f_hum;
+	res = data[0] | (data[1] << 8);
+	f_hum = (float)res;
+//	f_hum = f_hum/1000;
+	f_hum = (f_hum/65536)*100;
+
+	return f_hum;
+}
+//-----------------------------------------------------------------------------
+
 
 /* USER CODE END 4 */
 

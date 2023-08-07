@@ -110,6 +110,66 @@ extern I2C_HandleTypeDef hi2c2;
 	  return ret;
   }
 //-----------------------------------------------------------------------------
+  HAL_StatusTypeDef hdc2080_Read_Humidity(uint8_t *data) {
+  	  ret = HAL_I2C_Mem_Read(&hi2c2, DevAddress, Humidity_LowAddress, I2C_MEMADD_SIZE_8BIT,
+  			                                             data, 2, Timeout);
+  	  return ret;
+    }
+  //-----------------------------------------------------------------------------
+
+/*
+  float GetTemperature(uint8_t *data) {
+  	uint16_t res;
+  	float f_temp;
+  	res = data[0] | (data[1] << 8);
+  	f_temp = (float)res;
+  	f_temp = (f_temp/65536)*165 - 40.5;
+  	return f_temp;
+  }
+//-----------------------------------------------------------------------------
+  float GetHum(uint8_t *data) {
+  	uint16_t res;
+  	float f_hum;
+  	res = data[0] | (data[1] << 8);
+  	f_hum = (float)res;
+  	f_hum = (f_hum/65536)*100;
+
+  	return f_hum;
+  }
+*/
+//-----------------------------------------------------------------------------
+  float hdc2080_GetTemperature(void) {
+	uint8_t data[2] = {0};
+  	uint16_t res;
+  	float f_temp;
+
+  	if(hdc2080_Read_Temperature(data) == HAL_OK) {
+  	res = data[0] | (data[1] << 8);
+  	f_temp = (float)res;
+  	f_temp = (f_temp/65536)*165 - 40.5;
+  	}
+  	else {
+  		f_temp = -1;
+  	}
+  	return f_temp;
+  }
+//-----------------------------------------------------------------------------
+  float hdc2080_GetHumidity(void) {
+	uint8_t data[2] = {0};
+	uint16_t res;
+    float f_hum;
+
+  	if(hdc2080_Read_Humidity(data) == HAL_OK) {
+  	res = data[0] | (data[1] << 8);
+  	f_hum = (float)res;
+  	f_hum = (f_hum/65536)*100;
+  	}
+  	else {
+  		f_hum = -1;
+  	}
+    	return f_hum;
+ }
+//-----------------------------------------------------------------------------
 
 
 
