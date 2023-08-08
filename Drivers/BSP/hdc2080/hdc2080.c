@@ -5,27 +5,10 @@
  *      Author: Natan
  */
 /* Includes ------------------------------------------------------------------*/
-//#include "stm32l0xx_hal_def.h"
-//#include "stm32l0xx_hal_i2c.h"
-
-#include "stdint.h"
+//#include "stdint.h"
 #include "main.h"
-//extern I2C_HandleTypeDef hi2c1;
 extern I2C_HandleTypeDef hi2c2;
-
-//#include "i2c.h"
-//#include "stm32wlxx_hal_i2c.h"
-//#include "stm32wlxx_hal_def.h"
-//#include "gpio.h"
-
-
-//#include "app_lorawan.h"
-//#include "gpio.h"
-
-//#include "main.h"
-//#include "stm32wlxx_nucleo.h"
-
-
+#define hi2c hi2c2
 //-----------------------------------------------------------------------------
   uint16_t DevAddress= 0x80;
   uint16_t DevId_LowAddress= 0xFE;
@@ -41,8 +24,9 @@ extern I2C_HandleTypeDef hi2c2;
   uint8_t meas_trig[2] = {0x01};
 
   uint32_t Timeout = 555;
+  uint32_t Trials = 3;
   HAL_StatusTypeDef ret;
-
+  //-----------------------------------------------------------------------------
   //HAL_StatusTypeDef HAL_I2C_Mem_Write(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t MemAddress,
   //                                    uint16_t MemAddSize, uint8_t *pData, uint16_t Size, uint32_t Timeout);
 /*  ret = HAL_I2C_Mem_Write(&hi2c1, DevAddress, MeasConfig_Address, 1, &meas_trig, 1, Timeout);  */
@@ -67,25 +51,25 @@ extern I2C_HandleTypeDef hi2c2;
 */
 //-----------------------------------------------------------------------------
   HAL_StatusTypeDef hdc2080_StartMeassuring(void) {
-	ret = HAL_I2C_Mem_Write(&hi2c2, DevAddress, MeasConfig_Address, I2C_MEMADD_SIZE_8BIT,
+	ret = HAL_I2C_Mem_Write(&hi2c, DevAddress, MeasConfig_Address, I2C_MEMADD_SIZE_8BIT,
 			                                            meas_trig, 1, Timeout);
 	return ret;
   }
 //-----------------------------------------------------------------------------
   HAL_StatusTypeDef hdc2080_Read_Temperature(uint8_t *data) {
-	  ret = HAL_I2C_Mem_Read(&hi2c2, DevAddress, Temperature_LowAddress, I2C_MEMADD_SIZE_8BIT,
+	  ret = HAL_I2C_Mem_Read(&hi2c, DevAddress, Temperature_LowAddress, I2C_MEMADD_SIZE_8BIT,
 			                                             data, 2, Timeout);
 	  return ret;
   }
 //-----------------------------------------------------------------------------
   HAL_StatusTypeDef hdc2080_Read_TempAndHum(uint8_t *data) {
-	  ret = HAL_I2C_Mem_Read(&hi2c2, DevAddress, Temperature_LowAddress, I2C_MEMADD_SIZE_8BIT,
+	  ret = HAL_I2C_Mem_Read(&hi2c, DevAddress, Temperature_LowAddress, I2C_MEMADD_SIZE_8BIT,
 			                                             data, 4, Timeout);
 	  return ret;
   }
 //-----------------------------------------------------------------------------
   HAL_StatusTypeDef hdc2080_Read_ManufacturerID(uint8_t *data) {
-	  ret = HAL_I2C_Mem_Read(&hi2c2, DevAddress, ManufacturerId_LowAddress, I2C_MEMADD_SIZE_8BIT,
+	  ret = HAL_I2C_Mem_Read(&hi2c, DevAddress, ManufacturerId_LowAddress, I2C_MEMADD_SIZE_8BIT,
 			                                             data, 2, Timeout);
 	  return ret;
   }
@@ -95,48 +79,28 @@ extern I2C_HandleTypeDef hi2c2;
 
 //-----------------------------------------------------------------------------
   HAL_StatusTypeDef hdc2080_Read_DevID(uint8_t *data) {
-	//  ret = HAL_I2C_Mem_Read(&hi2c1, DevAddress, DevId_LowAddress, I2C_MEMADD_SIZE_8BIT,
-	//		                                             data, 2, Timeout);
-	 // return status;
-	  return HAL_I2C_Mem_Read(&hi2c2, DevAddress, DevId_LowAddress, I2C_MEMADD_SIZE_8BIT,
-	  			                                             data, 2, Timeout);
+	  return HAL_I2C_Mem_Read(&hi2c, DevAddress, DevId_LowAddress,
+			                           I2C_MEMADD_SIZE_8BIT, data, 2, Timeout);
   }
 //-----------------------------------------------------------------------------
- // HAL_StatusTypeDef HAL_I2C_IsDeviceReady(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint32_t Trials,
- //                                         uint32_t Timeout)
   HAL_StatusTypeDef hdc2080_IsDeviceReady(void) {
-	  ret = HAL_I2C_IsDeviceReady(&hi2c2, DevAddress,3,Timeout);
-
-	  return ret;
+	  return HAL_I2C_IsDeviceReady(&hi2c, DevAddress, Trials, Timeout);
   }
 //-----------------------------------------------------------------------------
   HAL_StatusTypeDef hdc2080_Read_Humidity(uint8_t *data) {
-  	  ret = HAL_I2C_Mem_Read(&hi2c2, DevAddress, Humidity_LowAddress, I2C_MEMADD_SIZE_8BIT,
-  			                                             data, 2, Timeout);
-  	  return ret;
-    }
-  //-----------------------------------------------------------------------------
-
-/*
-  float GetTemperature(uint8_t *data) {
-  	uint16_t res;
-  	float f_temp;
-  	res = data[0] | (data[1] << 8);
-  	f_temp = (float)res;
-  	f_temp = (f_temp/65536)*165 - 40.5;
-  	return f_temp;
+	  return  HAL_I2C_Mem_Read(&hi2c, DevAddress, Humidity_LowAddress,
+  			                           I2C_MEMADD_SIZE_8BIT, data, 2, Timeout);
   }
 //-----------------------------------------------------------------------------
-  float GetHum(uint8_t *data) {
-  	uint16_t res;
-  	float f_hum;
-  	res = data[0] | (data[1] << 8);
-  	f_hum = (float)res;
-  	f_hum = (f_hum/65536)*100;
-
-  	return f_hum;
+ uint16_t hdc2080_GetTempCode(uint8_t *data) {
+  	uint16_t res = data[0] | (data[1] << 8);
+   	return res;
   }
-*/
+//-----------------------------------------------------------------------------
+ uint16_t hdc2080_GetHumCode(uint8_t *data) {
+  	uint16_t res = data[0] | (data[1] << 8);
+   	return res;
+  }
 //-----------------------------------------------------------------------------
   float hdc2080_GetTemperature(void) {
 	uint8_t data[2] = {0};
