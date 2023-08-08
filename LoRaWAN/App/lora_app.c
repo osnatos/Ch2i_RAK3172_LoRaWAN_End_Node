@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
+//#include "hdc2080.h"
 #include "platform.h"
 #include "sys_app.h"
 #include "lora_app.h"
@@ -567,11 +568,22 @@ static void SendTxData(void)
 #endif /* CAYENNE_LPP */
 
 //  EnvSensors_Read(&sensor_data);
+  sensor_data.temperature = 0;
+  sensor_data.humidity = 0;
+
 
 //  if(hdc2080_StartMeassuring() == HAL_OK) {
-	  hdc2080_StartMeassuring();
+  HAL_StatusTypeDef stat = hdc2080_StartMeassuring();
+/*
   sensor_data.temperature = hdc2080_GetTemperature();
   sensor_data.humidity = hdc2080_GetHumidity();
+
+  float temp = 0;
+  float hum = 0;
+
+  hdc2080_GetTempAndHum(&temp, &hum);
+*/
+  hdc2080_GetTempAndHum(&sensor_data.temperature, &sensor_data.humidity);
 //  }
   APP_LOG(TS_ON, VLEVEL_M, "VDDA: %d\r\n", batteryLevel);
   APP_LOG(TS_ON, VLEVEL_M, "temp: %d\r\n", (int16_t)(sensor_data.temperature));

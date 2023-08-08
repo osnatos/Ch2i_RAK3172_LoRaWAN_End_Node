@@ -24,8 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stm32wlxx_hal_i2c.h"
-#include "hdc2080.h"
+//#include "stm32wlxx_hal_i2c.h"
+//#include "hdc2080.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,8 +46,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+/*
 HAL_StatusTypeDef status;
 uint8_t data[10] = {0};
+*/
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -93,14 +95,15 @@ int main(void)
   MX_LoRaWAN_Init();
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
+  /*
   status = hdc2080_IsDeviceReady();
   status = hdc2080_StartMeassuring();
-  status = hdc2080_Read_TempAndHum(data);
+  status = hdc2080_Read_TempAndHumCode(data);
   uint16_t temper = hdc2080_GetTempCode(data);
   uint16_t hum = hdc2080_GetHumCode(&data[2]);
   float f_temper = hdc2080_GetTemperature();
   float f_hum = hdc2080_GetHumidity();
-
+*/
   /* USER CODE END 2 */
 
   /* Infinite loop */

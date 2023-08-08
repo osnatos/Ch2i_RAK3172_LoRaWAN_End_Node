@@ -23,7 +23,8 @@ extern I2C_HandleTypeDef hi2c2;
   uint8_t manufacturerId[2];
   uint8_t meas_trig[2] = {0x01};
 
-  uint32_t Timeout = 555;
+//  uint32_t Timeout = 555;
+  uint32_t Timeout = 25;
   uint32_t Trials = 3;
   HAL_StatusTypeDef ret;
   //-----------------------------------------------------------------------------
@@ -62,21 +63,39 @@ extern I2C_HandleTypeDef hi2c2;
 	  return ret;
   }
 //-----------------------------------------------------------------------------
-  HAL_StatusTypeDef hdc2080_Read_TempAndHum(uint8_t *data) {
-	  ret = HAL_I2C_Mem_Read(&hi2c, DevAddress, Temperature_LowAddress, I2C_MEMADD_SIZE_8BIT,
-			                                             data, 4, Timeout);
+  HAL_StatusTypeDef hdc2080_Read_TempAndHumCode(uint8_t *data) {
+	  ret = HAL_I2C_Mem_Read(&hi2c, DevAddress, Temperature_LowAddress,
+			                           I2C_MEMADD_SIZE_8BIT, data, 4, Timeout);
 	  return ret;
   }
 //-----------------------------------------------------------------------------
+  void hdc2080_GetTempAndHum(float *temp,float *hum) {
+
+	  uint8_t data[4] = {0};
+
+ 	  ret = HAL_I2C_Mem_Read(&hi2c, DevAddress, Temperature_LowAddress,
+ 			                           I2C_MEMADD_SIZE_8BIT, data, 4, Timeout);
+ 	  if(ret == HAL_OK) {
+
+ 	 	uint16_t res = data[0] | (data[1] << 8);
+ 	  	//*temp = (float)res;
+ 	  	*temp = ((float)res/65536)*165 - 40.5;
+
+ 	 	res = data[2] | (data[3] << 8);
+ 	  	//*hum = (float)res;
+ 	  	*hum = ((float)res/65536)*100;
+ 	  }
+ 	  else {
+ 	  		*temp = (float)(-1);
+ 	  		*hum = (float)(-1);
+ 	  }
+  }
+//-----------------------------------------------------------------------------
   HAL_StatusTypeDef hdc2080_Read_ManufacturerID(uint8_t *data) {
-	  ret = HAL_I2C_Mem_Read(&hi2c, DevAddress, ManufacturerId_LowAddress, I2C_MEMADD_SIZE_8BIT,
-			                                             data, 2, Timeout);
+	  ret = HAL_I2C_Mem_Read(&hi2c, DevAddress, ManufacturerId_LowAddress,
+			                           I2C_MEMADD_SIZE_8BIT, data, 2, Timeout);
 	  return ret;
   }
-
-  //      HAL_I2C_Mem_Read(hi2c1,DevAddress,ManufacturerId_LowAddress,  1, manufacturerId, 2, Timeout);
-
-
 //-----------------------------------------------------------------------------
   HAL_StatusTypeDef hdc2080_Read_DevID(uint8_t *data) {
 	  return HAL_I2C_Mem_Read(&hi2c, DevAddress, DevId_LowAddress,
