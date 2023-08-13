@@ -69,6 +69,11 @@ extern I2C_HandleTypeDef hi2c2;
 	  return ret;
   }
 //-----------------------------------------------------------------------------
+#define VDD 3.3       // [V]
+#define TEMPpsrr 0.08 // Supply Sensitivity on accuracy [^C/V]
+// (40.5+TEMPpsrr*(VDD-1.8)  = 40.5 + (0.08*(3.3-1.8)) = 40.5 +(0.08*1.5)
+//  = 40.5 + 0.12 = 40.62
+
   void hdc2080_GetTempAndHum(float *temp,float *hum) {
 
 	  uint8_t data[4] = {0};
@@ -79,7 +84,7 @@ extern I2C_HandleTypeDef hi2c2;
 
  	 	uint16_t res = data[0] | (data[1] << 8);
  	  	//*temp = (float)res;
- 	  	*temp = ((float)res/65536)*165 - 40.5;
+ 	  	*temp = ((float)res/65536)*165 - 40.62;
 
  	 	res = data[2] | (data[3] << 8);
  	  	//*hum = (float)res;
