@@ -573,7 +573,8 @@ static void SendTxData(void)
 
 
 //  if(hdc2080_StartMeassuring() == HAL_OK) {
-  HAL_StatusTypeDef stat = hdc2080_StartMeassuring();
+//  HAL_StatusTypeDef stat = hdc2080_StartMeassuring();
+  hdc2080_StartMeassuring();
 /*
   sensor_data.temperature = hdc2080_GetTemperature();
   sensor_data.humidity = hdc2080_GetHumidity();
